@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+    <extension point="org.jkiss.dbeaver.sql.editorAddIns">
+        <addIn id="org.jkiss.dbeaver.sql.history.addIn" class="org.jkiss.dbeaver.sql.history.SQLHistoryAddIn"/>
+    </extension>
+
+    <extension point="org.eclipse.ui.commands">
+        <command id="org.jkiss.dbeaver.sql.history.openFile"
+                 name="SQL History"
+                 description="Open SQL execution history"
+                 categoryId="org.jkiss.dbeaver.core.sql"/>
+    </extension>
+
+    <extension point="org.eclipse.ui.views">
+        <view id="org.jkiss.dbeaver.sql.history.SQLHistoryView"
+              name="SQL History"
+              class="org.jkiss.dbeaver.sql.history.SQLHistoryView"
+              category="org.jkiss.dbeaver.core.category"/>
+    </extension>
+
+    <extension point="org.eclipse.ui.handlers">
+        <handler commandId="org.jkiss.dbeaver.sql.history.openFile"
+                 class="org.jkiss.dbeaver.sql.history.OpenHistoryHandler"/>
+    </extension>
+
+    <extension point="org.eclipse.ui.menus">
+        <menuContribution allPopups="false" locationURI="toolbar:org.jkiss.dbeaver.ui.editors.sql.toolbar.side.top?after=tools">
+            <command commandId="org.jkiss.dbeaver.sql.history.openFile">
+                <visibleWhen checkEnabled="false">
+                    <test property="org.jkiss.dbeaver.ui.toolbar.configuration.visible"
+                          args="sqlEditor.side.top,org.jkiss.dbeaver.sql.history.openFile"/>
+                </visibleWhen>
+            </command>
+        </menuContribution>
+    </extension>
+
+    <extension point="org.jkiss.dbeaver.toolBarConfiguration">
+        <toolBar key="sqlEditor.side.top">
+            <item commandId="org.jkiss.dbeaver.sql.history.openFile" defaultVisibility="true"/>
+        </toolBar>
+    </extension>
+
+    <extension point="org.eclipse.ui.commandImages">
+        <image commandId="org.jkiss.dbeaver.sql.history.openFile"
+               icon="platform:/plugin/org.jkiss.dbeaver.ui/icons/sql/details.svg"/>
+    </extension>
+</plugin>
