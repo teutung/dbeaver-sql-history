@@ -1,26 +1,19 @@
 # DBeaver SQL History Plugin
 
-Automatically records successfully executed SQL statements from DBeaver SQL Editor, categorizes them by type, and persists to an HTML file.
+Automatically records every successfully executed SQL statement from DBeaver SQL Editor, appends to a TXT file (O(1) I/O, never slows down), and opens in your default browser on demand.
 
 ## Features
 
-- Records every successful SQL execution automatically
-- Categorizes SQL as DQL / DML / DDL / TCL
-- Dedicated SQL History view with category filtering (DQL/DML/DDL/DCL/TCL/All)
-- Right-click context menu: Copy SQL / View Full SQL
-- Double-click to view full SQL in dialog
-- HTML audit log saved next to the plugin JAR (`SQL Historys.html`)
-- Append-only audit log (never deletes historical data)
-- SQL text preserves original formatting (line breaks, indentation)
+- Records every successful SQL execution automatically — zero configuration
+- Categorizes SQL as DQL / DML / DDL / TCL / UNKNOWN
+- Append-only storage (`SQL Historys.txt`, never deletes historical data)
+- **O(1) append** — writing never slows down regardless of history size
+- View in browser: toolbar button reads TXT → generates HTML → opens default browser
 - Columns: Time, Datasources, Category, SQL Text, Duration (ms), Rows
 
 ## Installation
 
-### 1. Download the JAR
-
-Download `dbeaver-sql-history.jar` from the [releases page](../../releases) or build it yourself.
-
-### 2. Copy to DBeaver plugins directory
+### 1. Copy JAR to DBeaver plugins directory
 
 ```
 cp dbeaver-sql-history.jar /path/to/dbeaver/plugins/
@@ -31,33 +24,32 @@ Example paths:
 - **macOS**: `/Applications/DBeaver.app/Contents/Eclipse/plugins/`
 - **Linux**: `/opt/dbeaver/plugins/`
 
-### 3. Register the plugin
+### 2. Register the plugin
 
-Edit the file `configuration/org.eclipse.equinox.simpleconfigurator/bundles.info` in your DBeaver installation directory and add the following line at the end:
+Edit `configuration/org.eclipse.equinox.simpleconfigurator/bundles.info` in your DBeaver installation directory and add this line at the end:
 
 ```
 org.jkiss.dbeaver.sql.history,1.0.0.202605061703,plugins/dbeaver-sql-history.jar,4,false
 ```
 
-### 4. Restart DBeaver
-
-### 5. Open the view
-
-**Window → Show View → Other → DBeaver → SQL History**
-
-Or click the **SQL History** button in the SQL editor's right sidebar toolbar.
+### 3. Restart DBeaver
 
 ## Usage
 
 | Action | How |
 |--------|-----|
-| Auto-record | SQL executed successfully in the SQL Editor is automatically recorded |
-| View history | Open **SQL History** view via Window → Show View or toolbar button |
-| Filter by type | Click **Filter: All** toolbar button to cycle through categories |
-| Clear in-memory | Click **Clear History** toolbar button |
-| Copy SQL | Right-click a row → **Copy SQL** |
-| View full SQL | Right-click a row → **View Full SQL** (or double-click) |
-| HTML audit log | All history is also saved to `plugins/SQL Historys.html` |
+| Auto-record | Any SQL executed successfully in the SQL Editor is automatically recorded |
+| View history | Click the **SQL History** button in the SQL editor's right sidebar toolbar |
+| Browser opens | A temporary `SQL Historys.html` is generated from `SQL Historys.txt` and opened in your default browser |
+
+The TXT and HTML files are located next to the plugin JAR (same directory as `dbeaver-sql-history.jar`).
+
+## File Structure
+
+| File | Description |
+|------|-------------|
+| `plugins/SQL Historys.txt` | Persistent append-only storage. Each line is an HTML `<tr>` row. Never deleted. |
+| `plugins/SQL Historys.html` | Temporary file, generated on demand when you click the toolbar button. Overwritten each time. |
 
 ## Columns
 
@@ -75,13 +67,8 @@ Or click the **SQL History** button in the SQL editor's right sidebar toolbar.
 Requires OpenJDK 21+ and the DBeaver SDK (parent POM + required plugins).
 
 ```bash
-# From the dbeaver project root (after setting up dbeaver-common)
-mvn install -pl plugins/org.jkiss.dbeaver.sql.history -am
-```
-
-The JAR will be in:
-```
-plugins/org.jkiss.dbeaver.sql.history/target/org.jkiss.dbeaver.sql.history-1.0.0-SNAPSHOT.jar
+# From the dbeaver project root
+mvn clean package -pl plugins/org.jkiss.dbeaver.sql.history -am -DenforcePlatform=false -DskipTests
 ```
 
 ## Uninstall

@@ -12,12 +12,6 @@
                  categoryId="org.jkiss.dbeaver.core.sql"/>
     </extension>
 
-    <extension point="org.eclipse.ui.views">
-        <view id="org.jkiss.dbeaver.sql.history.SQLHistoryView"
-              name="SQL History"
-              class="org.jkiss.dbeaver.sql.history.SQLHistoryView"
-              category="org.jkiss.dbeaver.core.category"/>
-    </extension>
 
     <extension point="org.eclipse.ui.handlers">
         <handler commandId="org.jkiss.dbeaver.sql.history.openFile"
